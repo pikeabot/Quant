@@ -37,30 +37,20 @@ struct least_squares calc_least_squares(double buff[BUFF_LEN]) {
 	//sum(x)
 	for (i=1; i<BUFF_LEN+1; i++) {
 		sumx=i+sumx;
+		xsqrd=xsqrd+i*i;
 	}
 	//printf("sumx = %f  ", sumx );
 	//sum(y)
 	for (i=0; i<BUFF_LEN; i++) {
 		sumy=sumy+buff[i];
-
-	}
-//printf("sumy = %f  ", sumy );
-	//sum(xy)
-	for (i=0; i<BUFF_LEN+0; i++) {
 		xy=xy+buff[i]*(i+1);
 	}
-//printf("xy = %f  ", xy );
-	//sum(x^2)
-	for (i=1; i<BUFF_LEN+1; i++) {
-		xsqrd=xsqrd+i*i;
-	}
-//printf("xsqrd = %f  ", xsqrd);
+
 	m=(xy-((sumx*sumy)/BUFF_LEN))/(xsqrd-(sumx*sumx)/BUFF_LEN);
 
 	ls.m=m;
 	ls.y_intercept=m/(sumx/BUFF_LEN);
-//printf("m = %f  ", m );
-//printf("y_int = %f\n", ls.y_intercept );
+
 	return ls;
 
 }

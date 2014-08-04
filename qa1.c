@@ -222,7 +222,6 @@ int main() {
 		else if (ls.m<.01) {
 			twtr=sell(twtr, curr_price, data[i][0]);
 		}
-
 		//printf("%f  %f  %f  ", time_buffer[0], time_buffer[1], time_buffer[2] );
 		//printf("%s  %f\n", data[i][0], ls.m );
 		last_price=curr_price;
