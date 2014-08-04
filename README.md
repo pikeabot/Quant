@@ -8,3 +8,6 @@ implemented are:
 	RSI
 	least squares 
 	standard deviation
+	
+
+Stock data comes from Quandl. Currently only daily data is available.
