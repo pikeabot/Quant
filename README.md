@@ -1,3 +1,8 @@
+8/14/2014
+added candlestick.py to quant/qtools
+	-candlestick_daily provides basic candlestick analysis
+	still buggy and needs to be tuned
+
 qa1.c and qamath.h are a simple trading algo that use least squares to calculate
 trendlines and very basic candlesticking. 
 
@@ -11,3 +16,4 @@ implemented are:
 	
 
 Stock data comes from Quandl. Currently only daily data is available.
+
