@@ -1,3 +1,5 @@
+8/26/2014
+Added web based chart. Uses Flask. Missing labels and the buttons don't work.
 8/14/2014
 added candlestick.py to quant/qtools
 	-candlestick_daily provides basic candlestick analysis
