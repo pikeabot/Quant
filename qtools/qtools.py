@@ -1,5 +1,17 @@
 import math
 
+'''
+{ "_id" : ObjectId("53f2e5fc1d41c817974c0896"), 
+"High" : 145.3, 
+"Adj Close" : 144.09, 
+"symbol" : "MMM", 
+"Volume" : 1390200, 
+"Low" : 144.01, 
+"Date" : ISODate("2014-06-23T00:00:00Z"), 
+"Close" : 144.09, 
+"Open" : 145.1 }
+'''
+
 def least_squares(buffer):
 	blen = len(buffer)
 
@@ -74,3 +86,78 @@ TODO: add smoothing
 def ema(curr_price, prev_ema, time_period):
 
 	return (curr_price-prev_ema)*(2/(float(time_period)+1))+prev_ema
+
+'''
+uses get_stock_data1
+'''
+def macd_line(stock_data):
+	b12=[]
+	b26=[]
+	macd=[]
+	#for initial value use sma
+	for i in range (14,26):
+		b12.append(stock_data[i-14]['close'])
+
+	for i in range (0, 26):
+		b26.append(stock_data[i-26]['close'])
+
+	prev_ema12 = get_avg(b12)
+	prev_ema26 = get_avg(b26)
+
+	for i in range (26, len(stock_data)):
+
+		ema12 = ema(stock_data[i]['close'], prev_ema12, 12)
+		ema26 = ema(stock_data[i]['close'], prev_ema26, 26)
+
+		macd.append(ema12-ema26)
+
+		prev_ema12 = ema12
+		prev_ema26 = ema26
+	
+	return macd
+
+'''
+9 day ema of MACD macd_line
+'''
+def macd_signal_line(stock_data, macd_data):
+	#for initial value use sma
+	prev_ema9 = get_avg(macd_data[0:9])
+
+	for i in range (9, len(macd_data)):
+		buffer_9day[i-9] = macd_data[i-9:i]
+		ema9[i-9] = ema(stock_data[i].close, prev_ema9, 9)
+
+		prev_ema9 = ema9
+	return ema9
+
+def percent_k(buffer):
+
+	buffer_len = len(buffer)
+
+	return 100*(buffer[buffer_len-1]-min(buffer))/(max(buffer)-min(buffer))
+
+	
+def percent_d(k):
+	
+	return get_avg(k)
+
+def kdj(buffer):
+	pass
+
+def Williams_perR():
+	pass
+
+def bias():
+	pass
+
+'''
+volume moving average
+'''
+def vma(buffer):
+
+	get_avg(buffer)
+
+
+
+
+

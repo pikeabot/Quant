@@ -1,6 +1,8 @@
 import os
 import math
 from qtools import *
+from candlestick import *
+from quandlio import get_stock_data, get_stock_data1
 
 BUFF_LEN=5
 
@@ -46,49 +48,23 @@ class stock:
 
 		self.stock_value=self.num_shares*curr_price;
 
+
 def main():
 
-	date=[]
-	openp=[]
-	high=[]
-	low=[]
-	close=[]
-	volume=[]
-
-	filename='/home/grandoverlord/quant/GOOG-NYSE_TWTR.csv'
-
-	try:
-		fh=open(filename, "r")
-
-	except IOError:
-   		print "Error: can\'t find file or read data"
-	else:
-   		fh.readline()
-
-   		for i in range(0, 178):
-	   		line=fh.readline()
-	   		l=line.split(',')
-	   		date.append(l[0])
-	   		openp.append(float(l[1]))
-	   		high.append(float(l[2]))
-	   		low.append(float(l[3]))
-	   		close.append(float(l[4]))
-	   		volume.append(float(l[5]))
- 
-   		date.reverse()
-   		openp.reverse()
-   		high.reverse()
-   		low.reverse()
-   		close.reverse()
-   		volume.reverse()
-   		fh.close()
-
+   	twtr_data = get_stock_data1('/home/grandoverlord/quant/Stocks/GOOG-NYSE_TWTR.csv')
+   	#twtr_data = get_stock_data('/home/grandoverlord/quant/Stocks/GOOG-NASDAQ_CNAT.csv')
+   	#twtr_data = get_stock_data('/home/grandoverlord/quant/Stocks/GOOG-NYSE_TSL.csv')
    	#init stock for purchase
+   	'''
    	twtr=stock()
-   	curr_price=close[2]
-	twtr.buy(curr_price, date[2])
+   	curr_price=twtr_data.close[2]
+	twtr.buy(curr_price, twtr_data.date[2])
 	last_price=curr_price
+	'''
 
+	macdln=macd_line(twtr_data)
+	for i in range (0,len(macdln)):
+		print macdln[i]
 	'''
 	simple trading algo
 	assumes that stock is bought at the closing price and that the
@@ -96,37 +72,43 @@ def main():
 	'''
 	'''
 	for i in range(5, 178):
-		time_buffer=close[i-5:i]
+		time_buffer=twtr_data.close[i-5:i]
 		m=least_squares(time_buffer)
 		sigma= standard_dev(time_buffer)
 
 		# upward slope and hit a peak
 		
-		if m>2 and sigma>2 :
-			twtr.buy(close[i], date[i])
-		elif m<0 and sigma>2:
-			twtr.sell(close[i], date[i])
-		print date[i]+ " " + str(m) + " "+ str(sigma) + " " +\
+		if m>.5 and sigma>.5 :
+			twtr.buy(twtr_data.close[i], twtr_data.date[i])
+		elif m<0 and sigma>.5:
+			twtr.sell(twtr_data.close[i], twtr_data.date[i])
+		print twtr_data.date[i]+ " " + str(m) + " "+ str(sigma) + " " +\
 			str(twtr.get_money()+twtr.get_stock_value()) + " " + \
 			str(twtr.get_num_shares())
-	'''
+		'''
 
 	'''
 	for i in range(0, 25):
 		print rsi(close[i:i+10])
 	'''
-
+	''''
 	emalist=[]
-	sma=get_avg(close[0:19])
+	sma=get_avg(twtr_data.close[0:19])
 	emalist.append(sma)
-	curr_ema=ema(close[20],  sma, 20)
+	curr_ema=ema(twtr_data.close[20],  sma, 20)
 	print curr_ema
 	emalist.append(curr_ema)
-
+	
 	for i in range(21, 35):
-		curr_ema=ema(close[i], emalist[-1], 20)
-		print date[i]+ " " + str(curr_ema)
+		curr_ema=ema(twtr_data.close[i], emalist[-1], 20)
+		print twtr_data.date[i]+ " " + str(curr_ema)
 		emalist.append(curr_ema)
+	'''
+	'''
+	for i in range(0, 184):
+		c = candlestick_daily(twtr_data.openp[i], twtr_data.close[i], twtr_data.high[i], twtr_data.low[i])
 
+		print twtr_data.date[i] + " " + c
+	'''
 if __name__=='__main__':
 		main()

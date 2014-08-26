@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!-- This site was created in Webflow. http://www.webflow.com-->
+<!-- Last Published: Thu Aug 21 2014 07:51:26 GMT+0000 (UTC) -->
+<html data-wf-site="53f59d58f9e528193c8c82ce" data-wf-page="53f59d58f9e528193c8c82cf">
+<head>
+  <meta charset="utf-8">
+  <title>stockchart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Webflow">
+  <link rel="stylesheet" type="text/css" href="/static/css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/webflow.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/stockchart.webflow.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js"></script>
+  <script>
+    WebFont.load({
+      google: {
+        families: ["Montserrat:400,700"]
+      }
+    });
+  </script>
+  <script type="text/javascript" src="/static/js/modernizr.js"></script>
+  <script type='text/javascript' src='//code.jquery.com/jquery-1.9.1.js'></script>
+
+<script>
+var data = JSON.parse({{stock_data|tojson|safe}});
+var macd_line = JSON.parse({{macd_line|tojson|safe}});
+
+</script>
+
+
+
+<script type='text/javascript'>//<![CDATA[ 
+
+$(function () {
+    //$.getJSON('http://localhost:5000', function (data) {
+        //var data = JSON.parse({{stock_data|tojson|safe}});
+        // split the data set into ohlc and volume
+
+        var ohlc = [],
+            volume = [],
+            dataLength = data.length,
+            // set the allowed units for data grouping
+            groupingUnits = [[
+                'week',                         // unit name
+                [1]                             // allowed multiples
+            ], [
+                'month',
+                [1, 2, 3, 4, 6]
+            ]],
+
+            i = 0;
+
+        for (i; i < dataLength; i += 1) {
+            ohlc.push([
+                data[i].date, // the date
+                data[i].open, // open
+                data[i].high, // high
+                data[i].low, // low
+                data[i].close // close
+            ]);
+
+            volume.push([
+                data[i].date, // the date
+                data[i].volume// the volume
+            ]);
+        }
+
+
+        // create the chart
+        $('#container').highcharts('StockChart', {
+
+            rangeSelector: {
+                inputEnabled: $('#container').width() > 480,
+                selected: 1
+            },
+
+            title: {
+                text: '{{stock['symbol']}}' + ' Historical'
+            },
+
+            yAxis: [{
+                labels: {
+                    align: 'right',
+                    x: -3
+                },
+                title: {
+                    text: 'OHLC'
+                },
+                height: '60%',
+                lineWidth: 2
+            }, {
+                labels: {
+                    align: 'right',
+                    x: -3
+                },
+                title: {
+                    text: 'Volume'
+                },
+                top: '65%',
+                height: '35%',
+                offset: 0,
+                lineWidth: 2
+            }],
+
+            series: [{
+                type: 'candlestick',
+                name: '{{stock['symbol']}}',
+                data: ohlc,
+                dataGrouping: {
+                    units: groupingUnits
+                }
+            }, {
+                type: 'column',
+                name: 'Volume',
+                data: volume,
+                yAxis: 1,
+                dataGrouping: {
+                    units: groupingUnits
+                }
+            }]
+        //});
+    });
+});
+//]]>  
+
+</script>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="https://daks2k3a4ib2z.cloudfront.net/placeholder/favicon.ico">
+</head>
+<body>
+  <h3 id="name">{{stock['symbol']}}</h3>
+  <div class="info">
+    <div class="w-row">
+      <div class="w-col w-col-6">
+        <div class="infolabel">Date:</div>
+        <div class="infolabel_even">Open:</div>
+        <div class="infolabel">Close:</div>
+        <div class="infolabel_even">Low:</div>
+        <div class="infolabel">High:</div>
+        <div class="infolabel_even">Volume:</div>
+      </div>
+      <div class="w-col w-col-6">
+        <div class="date" id="date">Date</div>
+        <div class="infolabel_even" id="open">{{stock['Open']}}</div>
+        <div class="infolabel" id="close">{{stock['Close']}}</div>
+        <div class="infolabel_even" id="low">{{stock['Low']}}</div>
+        <div class="infolabel" id="high">{{stock['High']}}</div>
+        <div class="open" id="volume">{{stock['Volume']}}</div>
+      </div>
+    </div>
+  </div>
+  <a class="button" href="#">MACD</a><a class="button" href="#">RSI</a><a class="button" href="#">MACD</a>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/static/js/webflow.js"></script>
+  <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+
+
+    <script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+  <div id ="chartdiv" style=" float: left; width: 900px; overflow-x:scroll; 
+  overflow-y: hidden">
+  <canvas class="chart" id="chart" width="2000" height="400"></canvas>
+
+  <canvas class="chart" id="vol" width = "2000" height="150"></canvas>
+
+  <canvas class="chart" id="macd" width="2000" height="150"></canvas>
+</div>
+<!--
+<div id="container" style="height: 400px; min-width: 310px"></div>
+!-->
+  <script type="text/javascript" src="/static/js/webflow.js"></script>
+  <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
+  <script type="text/javascript" src="/static/js/macd.js">
+        
+</script>
+</body>
+</html>
