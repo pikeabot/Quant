@@ -64,20 +64,37 @@ def standard_dev(buffer):
 calculate Relative Strength Index
 TODO: need to add smoothing
 '''
-def rsi(buffer):
-	blen = len(buffer)
-
+def rsi(stock_data, period):
+	#blen = len(buffer)
+	buffer=[]
+	rsi_data=[]
 	up=0.0
 	down=0.0
+	
+	for i in range(period, len(stock_data)):
+		for j in range(i-period, i):
+			buffer.append(stock_data[j]['close'])
+			
+		for k in range(1, period):
+			
+			if buffer[k]>buffer[k-1]:
+				up=up+buffer[k]
+				
+			elif buffer[k]<buffer[k-1]:
+				down=down+buffer[k]
 
-	for i in range(1, blen-1):
-		#print buffer[i]
-		if buffer[i]>buffer[i-1]:
-			up=up+buffer[i]
-		elif buffer[i]<buffer[i-1]:
-			down=down+buffer[i]
+		if down==0:
+			ud = 0
+		else:
+			ud=up/down
+		rsi_data.append(100.00-(100.0/(1.0+ud)))
 
-	return 100.00-(100.0/(1.0+(up/down)))
+		buffer=[]
+		up=0.0
+		down=0.0
+
+	return rsi_data
+
 
 ''' 
 calculate exponential moving average
@@ -119,15 +136,17 @@ def macd_line(stock_data):
 '''
 9 day ema of MACD macd_line
 '''
-def macd_signal_line(stock_data, macd_data):
+def macd_signal_line(macd_data):
+
+	ema9=[]
 	#for initial value use sma
 	prev_ema9 = get_avg(macd_data[0:9])
 
 	for i in range (9, len(macd_data)):
-		buffer_9day[i-9] = macd_data[i-9:i]
-		ema9[i-9] = ema(stock_data[i].close, prev_ema9, 9)
+		
+		ema9.append(ema(macd_data[i], prev_ema9, 9))
 
-		prev_ema9 = ema9
+		prev_ema9 = ema9[i-9]
 	return ema9
 
 def percent_k(buffer):
@@ -153,9 +172,18 @@ def bias():
 '''
 volume moving average
 '''
-def vma(buffer):
+def vma(stock_data, period):
+	buffer =[]
+	vma_data = []
 
-	get_avg(buffer)
+	for i in range(period, len(stock_data)):
+		for j in range(i-period, i):
+			buffer.append(stock_data[j]['close'])
+			
+		vma_data.append(get_avg(buffer))
+
+	return vma_data
+	
 
 
 

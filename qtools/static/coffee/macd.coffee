@@ -1,4 +1,4 @@
-
+root = exports ? this
 
 ###
 draw main stock chart
@@ -32,46 +32,24 @@ for d, i in data
 	x=i*x_step
 
 	if d.close >d.open
-		y=400-d.close*5
+		y=600-d.close*8
 		chart_ctx.fillStyle="#00CC33";
 		chart_ctx.fillRect(x, y ,point_width, delta) 
 
 	else
 		chart_ctx.fillStyle="#CC0000";
-		y = 400-d.open*5
+		y = 600-d.open*8
 		chart_ctx.fillRect(x,y  ,point_width, delta) 
 
 	### draw high line ###
 	chart_ctx.moveTo(x+3, y)
-	chart_ctx.lineTo(x+3, 400-d.high*5)
+	chart_ctx.lineTo(x+3, 600-d.high*8)
 
 	### draw low line ###
 	chart_ctx.moveTo(x+3, y+delta)
-	chart_ctx.lineTo(x+3, 400-d.low*5)
+	chart_ctx.lineTo(x+3, 600-d.low*8)
 
 chart_ctx.stroke()
-
-
-###
-macd
-###
-
-macd = document.getElementById 'macd'
-ctx = macd.getContext '2d'
-ctx.translate(0.5, 0.5);
-
-point_width=2
-point_height=2
-
-x=0
-
-### draw center line ###
-ctx.beginPath();
-ctx.moveTo(0,75);
-ctx.lineTo(chartline,75);
-ctx.rect(x+i*x_step, macd_point*3+75 ,point_width, point_height) for macd_point, i in macd_line
-
-ctx.stroke()
 
 ###
 vol
@@ -82,7 +60,7 @@ vctx = vol.getContext '2d'
 vctx.translate(0.5, 0.5);
 
 point_width=5
-
+offset=10
 x=0
 
 ### draw center line ###
@@ -102,3 +80,63 @@ for d, i in data
 	
 
 vctx.stroke()
+
+###
+vma
+###
+root.showVma = -> 
+	vol = document.getElementById 'vol'
+	vctx = vol.getContext '2d'
+	vctx.translate(0.5, 0.5);
+	vctx.rect(x+(i+offset)*x_step, vma_point*10+75 ,point_width, point_height) for vma_point, i in vma_data
+	vctx.stroke()
+
+
+
+
+###
+macd
+###
+
+
+macd = document.getElementById 'macd'
+ctx = macd.getContext '2d'
+ctx.translate(0.5, 0.5);
+
+point_width=2
+point_height=2
+offset=26
+x=0
+
+### draw center line ###
+ctx.beginPath();
+ctx.moveTo(0,75);
+ctx.lineTo(chartline,75);
+ctx.rect(x+(i+offset)*x_step, macd_point*10+75 ,point_width, point_height) for macd_point, i in macd_line
+
+ctx.fillStyle="#CC0000";
+ctx.fillRect(x+(i+offset)*x_step, macd_sgpt*10+75,point_width, point_height) for macd_sgpt, i in macd_signal
+ctx.stroke()
+
+###
+RSI
+###
+
+rsi = document.getElementById 'rsi'
+rsi_ctx = rsi.getContext '2d'
+rsi_ctx.translate(0.5, 0.5);
+
+point_width=2
+point_height=2
+offset=10
+x=0
+
+### draw center line ###
+rsi_ctx.beginPath();
+rsi_ctx.moveTo(0,75);
+rsi_ctx.lineTo(chartline,75);
+
+rsi_ctx.rect(x+(i+offset)*x_step, rsi_point ,point_width, point_height) for rsi_point, i in rsi_data
+rsi_ctx.stroke()
+
+

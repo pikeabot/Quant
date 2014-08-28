@@ -19,15 +19,18 @@
       }
     });
   </script>
+  <script type="text/javascript" src="/static/js/showVMA.js"></script>
+
   <script type="text/javascript" src="/static/js/modernizr.js"></script>
   <script type='text/javascript' src='//code.jquery.com/jquery-1.9.1.js'></script>
 
 <script>
 var data = JSON.parse({{stock_data|tojson|safe}});
 var macd_line = JSON.parse({{macd_line|tojson|safe}});
-
+var macd_signal = JSON.parse({{macd_signal|tojson|safe}});
+var rsi_data=JSON.parse({{rsi_data|tojson|safe}});
+var vma_data=JSON.parse({{vma_data|tojson|safe}});
 </script>
-
 
 
 <script type='text/javascript'>//<![CDATA[ 
@@ -151,7 +154,9 @@ $(function () {
       </div>
     </div>
   </div>
-  <a class="button" href="#">MACD</a><a class="button" href="#">RSI</a><a class="button" href="#">MACD</a>
+  <input type = "button" class="button" id ="macdbtn" value = "MACD" onclick="showDiv('macd')"/>
+  <input type = "button" class="button" id="rsibtn" value = "RSI" onclick="showDiv('rsi')"/>
+  <input type = "button" class="button" id = "vmabtn" value = "VMA" onclick="showVMA()"/>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript" src="/static/js/webflow.js"></script>
   <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
@@ -165,11 +170,29 @@ $(function () {
 
   <canvas class="chart" id="vol" width = "2000" height="150"></canvas>
 
-  <canvas class="chart" id="macd" width="2000" height="150"></canvas>
+  <canvas class="chart" id="macd" width="2000" height="150" style="display: none;"></canvas>
+
+  <canvas class="chart" id="rsi" width="2000" height="150" style ="display: none;"></canvas>
 </div>
 <!--
 <div id="container" style="height: 400px; min-width: 310px"></div>
 !-->
+<script>
+function showDiv(divname) {
+  btn = document.getElementById(divname+'btn');
+  if (document.getElementById(divname).style.display == "block") {
+    document.getElementById(divname).style.display = "none";
+     
+     btn.style.backgroundColor="#5768b3";
+  }
+  else {
+    document.getElementById(divname).style.display = "block";
+    btn.style.backgroundColor="#66CCFF";
+  }
+   
+}
+</script>
+
   <script type="text/javascript" src="/static/js/webflow.js"></script>
   <!--[if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif]-->
   <script type="text/javascript" src="/static/js/macd.js">

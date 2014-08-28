@@ -61,10 +61,13 @@ def main():
 	twtr.buy(curr_price, twtr_data.date[2])
 	last_price=curr_price
 	'''
-
+	'''
 	macdln=macd_line(twtr_data)
-	for i in range (0,len(macdln)):
-		print macdln[i]
+
+	macdsg= macd_signal_line( macdln)
+	for i in range (0,len(macdsg)):
+		print macdsg[i]
+	'''
 	'''
 	simple trading algo
 	assumes that stock is bought at the closing price and that the
@@ -88,9 +91,16 @@ def main():
 		'''
 
 	'''
-	for i in range(0, 25):
-		print rsi(close[i:i+10])
+	rsi_data=rsi(twtr_data, 10)
+	
+	for i in range(0, len(rsi_data)):
+		print rsi_data[i]
 	'''
+	vma_data=vma(twtr_data, 10)
+	
+	for i in range(0, len(vma_data)):
+		print vma_data[i]
+
 	''''
 	emalist=[]
 	sma=get_avg(twtr_data.close[0:19])

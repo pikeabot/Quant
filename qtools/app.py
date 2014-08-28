@@ -17,7 +17,7 @@ data = get_stock_data1('/home/grandoverlord/quant/Stocks/GOOG-NYSE_TWTR.csv')
 "Close" : 144.09, 
 "Open" : 145.1 }
 '''
-n=49
+n=len(data)-1
 stock = { 
 "High" : data[n]['high'], 
 "symbol" : "TWTR", 
@@ -29,12 +29,20 @@ stock = {
 
 @app.route('/')
 def index():
-	
-    return render_template('index.html', stock=stock, 
-    						stock_data=json.dumps(data),
-    						macd_line = json.dumps(macd_line(data)),
-    						
+    sdata = json.dumps(data)
+    macdln = macd_line(data)
+    macdsg =macd_signal_line( macdln)
+    rsidata=rsi(data, 10)
+    vmadata=vma(data, 10)
+    return render_template('index.html', 
+    						stock=stock, 
+    						stock_data=sdata, 
+    						macd_line = json.dumps(macdln), 
+    						macd_signal=json.dumps(macdsg),
+                            rsi_data=json.dumps(rsidata),
+                            vma_data= json.dumps(vmadata)
     						)
+
 
 if __name__ == '__main__':
 	app.debug = True
