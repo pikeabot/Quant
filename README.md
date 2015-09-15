@@ -1,3 +1,6 @@
+8/27/2014
+Added MACD, RSI and VMA to chart as well as fixed low lines on chart. Added some button functionality to make things pretty.
+
 8/26/2014
 Added web based chart. Uses Flask. Missing labels and the buttons don't work.
 8/14/2014
