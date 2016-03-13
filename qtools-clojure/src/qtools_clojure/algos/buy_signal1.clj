@@ -9,8 +9,16 @@
 			(subvec list-vals 1 (count lines))))
 	)
 
-(defn calculate-slope [list-vals]
-	(println list-vals)
+(defn calculate-slope [list-vals sample-size]
+	(loop [x 1 x-loop-vec []]
+		(if (< x (+ sample-size 1))
+			(recur (inc x) (into x-loop-vec (set [x])))
+			(def x-vals x-loop-vec)
+			))
+	(def y-vals (map read-string list-vals))
+	(/ (- (* sample-size (reduce + (map * x-vals y-vals)) (* (reduce + x-vals) (reduce + y-vals))))
+		(- (* sample-size (reduce + (map * x-vals x-vals))) (* (reduce + x-vals) (reduce + x-vals))))
+		
 	)
 
 (defn main []
@@ -24,5 +32,6 @@
 		;(def vol-vals (get-list lines 5 ))
 	  )
 	(def x 0)
-	(calculate-slope (subvec close-vals x (+ x 5)))
+	(def sample-size 5)
+	(println (calculate-slope (subvec close-vals x (+ x sample-size)) sample-size))
 	)
